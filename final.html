@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   
+    <h1 
+    color: #3a318d;;
+    font-family: 'crackle', sans-serif;
+    font-size: 1.5em;
+    font-weight: 800;
+    margin-bottom: 1em;
+    margin-left:2000px;
+    text-align: center 50px;
+    margin-right:200px;
+   >  &emsp;&emsp;&emsp;&emsp;&emsp; INTERACTIVE VISUALIZATION FOR GROCERYSTORE DATASET </h1>
+
+
+    <title>Final Project</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/dc.css"/>
+    <link type="text/css" rel="stylesheet" href="css/dc-floatleft.css"/>
+    <style>
+
+
+        body  {background-color: #ddcdc2;}
+        .pie-slice path {
+            stroke:rgb(133, 133, 102);
+        }
+      
+        div.roundad {
+          position: absolute;
+          top: 80px;
+          left: 200px;
+          right: 1100px;
+          width: 200px;
+          height: 500px;
+          ;}
+
+        div.roundbtn {
+          position: absolute;
+          top: 125px;
+          left: 100px;
+          right: 1100px;
+          width: 200px;
+          height: 100px;
+          ;}
+        
+        div.absolute {
+          position: absolute;
+          top: 380px;
+          right: 490px;
+          width: 200px;
+          height: 800px;
+          ;}
+
+        div.relate {
+          position: absolute;
+          top: 120px;
+          right: 490px;
+          width: 200px;
+          height: 100px;
+          ;}
+
+        div.heatad {
+          position: absolute;
+          top: 820px;
+          right: 1300px;
+          width: 10px;
+          height: 100px;
+          ;}
+
+        div.sunb {
+        position: absolute;
+        top: 100px;
+        left: 500px;
+        right:900px;
+        ;}
+
+        div.bar1 {
+        position: absolute;
+        top: 85px;
+        left:1020px;
+        right:350px;
+        ;}
+
+        div.btn {
+        position: absolute;
+        top: 80px;
+        left:120px;
+        right:350px;
+        ;}
+
+        div.bar2 {
+        position: absolute;
+        top: 340px;
+        left: 1020px;
+        right: 200px;
+        ;}     
+
+    </style>        
+</head>
+<body>
+
+    
+   
+<div class="container">
+
+    
+
+<!-- <script type="text/javascript" src="js/header.js"></script> -->
+
+<div id="test" class="roundad">
+    <button type="button" class="btn" id="resetButton" style="text-align: center; border-radius: 50%; color:rgb(147, 216, 199); background-color: #d7e3e4; border: none; color: rgb(207, 8, 8); padding: 20px; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; ">Reset visualization System</button>
+</div>
+
+<div class="sunb"> <h3> SUNBURST </h3></div>
+<div class="bar1"> <h4> PIECHART </h4></div>
+<div class="bar2"> <h4> ROWCHART</h4></div>
+<!-- <div class="textbar"> <h5> The above Sunburst shows number of total filims in each Subject and Number of Awards received and not received in particular subject. Color differentiates type of Subject. Highest number of films is in Drama with 691 and lowest in War with 36. Highest number of Awards received and not received are Drama with 118 and 573. </h5></div> -->
+<!-- <div class="tworows"> <h5>  In the above Two Row Charts the RowChart 2 shows Sum of Lengths in each Subject.While, color represents type of Subject and RowChart 1 shows Total number of Awards Received and not received while color represents Yes(176) or NO(1564). Highest sum of lenght is Drama with 75416 and lowest is science Fiction with 3735. </h5></div> -->
+<!-- <div class="heattxt"> <h5>  The above heatMap shows Sum of Popularity in different Subjects with respect to Images. From the above visualization we can conclude that Nicholascage.gif has highest popularity in almost every Subject. Drama with Nicholascage has Highest popularity with 26668. </h5></div> -->
+<div id="test2" class="absolute"> </div>
+
+<div id="test3" class="relate"></div>
+<!-- <div class="heat"> <h3> HEATMAP CHART </h3></div>
+
+<div id="testvyn" class="heatad"> 
+
+</div> -->
+
+<!-- <div style="float: left">
+    <h5><p style="text-align:center 50px"; > The above table represents the sample data of the cereals dataset and configures the information of the manufacturers that who produces both the shelfs and calories.</p> </h5>
+    <button class="btn" id="download">download</button>
+</div> -->
+
+<!-- <script type="text/javascript" src="js/header.js"></script> -->
+<script type="text/javascript" src="js/d3.js"></script>
+<script type="text/javascript" src="js/crossfilter.js"></script>
+<script type="text/javascript" src="js/dc.js"></script>
+<script type="text/javascript">
+
+var chart3 = new dc.PieChart("#test3");
+var chart2 = new dc.RowChart("#test2");
+var chart = new dc.SunburstChart("#test");
+
+
+d3.csv("https://web.cs.kent.edu/~twu10/datasets/a1-grocerystoresurvey.csv").then(function(experiments) {
+
+  
+
+    var ndx = crossfilter(experiments),
+    GenDimension = ndx.dimension(function (d) {
+            return [d.Occupation, d.PaymentMethod, d.Gender];
+        });
+
+    var paSumGroup = GenDimension.group().reduceCount(function (d) {
+        return d.PurchaseAmount;
+    });
+
+    // spendDim = ndx.dimension(function(d) {return Math.floor(+d.Calories/10);}),
+
+    var GenOnlyDimension = ndx.dimension(function (d) {
+        return d.Gender;
+    });
+    var pgaOnlyLengthGroup = GenOnlyDimension.group().reduceCount(function (d) {
+        return d.PurchaseAmount;
+    });
+
+    var OccOnlyDimension = ndx.dimension(function (d) {
+        return d.PaymentMethod;
+    });
+    var poaOnlyLengthGroup = OccOnlyDimension.group().reduceCount(function (d) {
+        return d.PurchaseAmount;
+    });
+
+    d3.select('#resetButton')
+    .on('click', function() {
+      dc.filterAll();
+  		dc.redrawAll();
+      dc.filterAll();
+      dc.redrawAll();
+    });
+
+    chart3
+        .width(520)
+        .height(200)
+        .innerRadius(30)
+        .dimension(OccOnlyDimension)
+        .group(poaOnlyLengthGroup)
+        .legend(dc.legend().x(400).y(0).itemHeight(13).gap(4));
+
+    chart2
+        .width(600)
+        .height(200)
+        .dimension(GenOnlyDimension)
+        .group(pgaOnlyLengthGroup)
+        // .x(d3.scaleLinear().domain([0,10]))
+        // .elasticY(true)
+        // .xAxisLabel("Count")
+        // .yAxisLabel("Gender");
+
+    chart
+        .width(750)
+        .height(420)
+        .innerRadius(40)
+        .dimension(GenDimension)
+        .group(paSumGroup)
+        .legend(dc.legend().x(10).y(0).itemHeight(13).gap(4));
+
+    
+//     table
+//     .dimension(spendDim)
+//     .sortBy(function(d) { return d.Occupation; })
+//     .showSections(true)
+//     .columns(['PaymentMethod',
+//                 'Occupation',
+//               {
+//                 label: 'PurchaseAmount',
+//                   format: function(d) {
+//                       return  d.PurchaseAmount;
+//                   }
+//               },
+//               'Chain',
+//               'Gender',       
+//             ]);
+
+// d3.select('#download')
+//     .on('click', function() {
+//         var data = nameDim.top(Infinity);
+//         if(d3.select('#download-type input:checked').node().value ==='table') {
+//             data = data.sort(function(a, b) {
+//                 return table.order()(table.sortBy()(a), table.sortBy()(b));
+//             });
+//             data = data.map(function(d) {
+//                 var row = {};
+//                 table.columns().forEach(function(c) {
+//                     row[table._doColumnHeaderFormat(c)] = table._doColumnValueFormat(c, d);
+//                 });
+//                 return row;
+//             });
+//         }
+//         var blob = new Blob([d3.csvFormat(data)], {type: "text/csv;charset=utf-8"});
+//         saveAs(blob, 'data.csv');
+//     });
+
+    dc.renderAll();
+
+});
+
+</script>
+
+</div>
+
+<div style = "position:absolute; left:80px; top:620px;">
+<p style="background-color: rgb(234, 255, 47);">
+    <b>Analysis:</b>
+    An Interactive Visualization System is built upon Grocerystore survey dataset to categorically analyze 
+    these variables: Occupation, PaymentMethod, Gender grouped with the count of Purchasing Amount. Here, 
+    Sunburst chart is used to represent Occupation, PaymentMethod, Gender variables categorically. Then, 
+    a pie chart is used to highlight the catogories of PaymentMethod. Finally, a row chart is displayed with 
+    two Genders (Male and Female). All the charts can be selected by a mouse click on top of the category.
+    Also, if you hover the mouse over any of the chart you can see the count of PurchaseAmount which is created by tootip.
+    A Universal reset button is provided at top left area besides Sunburst chart to reset all the changes a user makes at their end.
+</p>
+</div>
+</body>
+</html>
